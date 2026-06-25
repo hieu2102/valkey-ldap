@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        valkey_version: ["7.2", "8.0", "8.1"]
+        valkey_version: ["7.2", "8.0", "8.1", "9.0", "9.1"]
     env:
       PYTHONUNBUFFERED: 1
     steps:
@@ -44,20 +44,21 @@ jobs:
       - name: Check if only the relevant files for testing the module are changed
         id: filter
         run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
-          else
-            CHANGED=$(git diff --name-only ${{ github.sha }}~1 ${{ github.sha }})
-          fi
+          # if [ "${{ github.event_name }}" = "pull_request" ]; then
+          #   CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }})
+          # else
+          #   CHANGED=$(git diff --name-only ${{ github.sha }}~1 ${{ github.sha }})
+          # fi
 
-          CODE_CHANGED=false
-          for file in $CHANGED; do
-            if [[ "$file" =~ ^test/ || "$file" =~ ^src/ || "$file" =~ ^Cargo || "$file" =~ ^.github/workflows/ci.yml || "$file" =~ ^.github/workflows/cargo-format.yml || "$file" =~ ^scripts/start_valkey || "$file" =~ ^scripts/stop_valkey ]]; then
-              CODE_CHANGED=true
-              break
-            fi
-          done
-          echo "code_changed=$CODE_CHANGED" >> $GITHUB_OUTPUT
+          # CODE_CHANGED=false
+          # for file in $CHANGED; do
+          #   if [[ "$file" =~ ^test/ || "$file" =~ ^src/ || "$file" =~ ^Cargo || "$file" =~ ^.github/workflows/ci.yml || "$file" =~ ^.github/workflows/cargo-format.yml || "$file" =~ ^scripts/start_valkey || "$file" =~ ^scripts/stop_valkey ]]; then
+          #     CODE_CHANGED=true
+          #     break
+          #   fi
+          # done
+          
+          echo "code_changed=true" >> $GITHUB_OUTPUT
 
       - name: Skip job if no src or test files changed
         if: steps.filter.outputs.code_changed != 'true'

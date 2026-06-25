@@ -57,7 +57,7 @@
     {
       "platform_id": "rockylinux-10",
       "family": "rhel",
-      "image": "rockylinux:10",
+      "image": "rockylinux/rockylinux:10",
       "arch": [
         "x86_64",
         "aarch64"

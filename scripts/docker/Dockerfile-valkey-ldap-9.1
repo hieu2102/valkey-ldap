@@ -1,0 +1,13 @@
+FROM debian:12
+
+VOLUME [ "/valkey-ldap" ]
+
+RUN dnf install rust cargo clang-libs clang clang-devel git openssl-devel -y
+
+RUN git clone -b 9.1 --single-branch https://github.com/valkey-io/valkey.git
+RUN cd valkey && \
+    make -j$(nproc) SANITIZER=address OPTIMIZATION=-g3 && \
+    make install
+
+WORKDIR /valkey-ldap
+CMD [ "valkey-server", "./valkey.conf" ]

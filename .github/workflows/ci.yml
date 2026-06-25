@@ -6,7 +6,6 @@ on:
       - main
       - 1.0
   pull_request:
-  workflow_dispatch:
 
 jobs:
   clang-format-check:
@@ -26,10 +25,10 @@ jobs:
           fi
 
   tests:
-    runs-on: fedora-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        valkey_version: ["8.1", "9.0", "9.1"]
+        valkey_version: ["7.2", "8.0", "8.1", "9.0", "9.1"]
     env:
       PYTHONUNBUFFERED: 1
     steps:
@@ -38,11 +37,7 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-      
-      - name: Install dependencies
-        run: |
-          sudo dnf install rust cargo clang-libs clang clang-devel openssl rustup -y
-      
+
       - name: Change rust toolchain to 1.87.0
         run: rustup override set 1.87.0
 
@@ -69,6 +64,12 @@ jobs:
         run: |
           echo "No src or test files changed, skipping job."
           exit 0
+
+      - name: Install dependencies
+        if: steps.filter.outputs.code_changed == 'true'
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y libssl-dev libldap-dev netcat-traditional docker-compose ldap-utils
 
       - name: Set up Python
         if: steps.filter.outputs.code_changed == 'true'

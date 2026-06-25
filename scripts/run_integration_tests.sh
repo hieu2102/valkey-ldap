@@ -1,15 +1,14 @@
 #!/bin/bash
-
 while [[ ! $PWD/ = */valkey-ldap/ ]]; do
     cd ..
 done
 
 cargo build || exit 1
 
-VALKEY_VERSION=${1:-8.1}
+VALKEY_VERSION=${1:-9.1}
 shift
 
-DOCKER_COMPOSE_RUNNING=`docker compose ls --filter name=valkey-ldap -q && true`
+DOCKER_COMPOSE_RUNNING="$(docker compose ls --filter name=valkey-ldap -q && true)"
 
 STOP_SERVERS=
 

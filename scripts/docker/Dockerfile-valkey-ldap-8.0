@@ -11,4 +11,5 @@ RUN cd valkey && \
     make install
 
 WORKDIR /valkey-ldap
+
 CMD [ "valkey-server", "./valkey.conf" ]
